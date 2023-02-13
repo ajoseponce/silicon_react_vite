@@ -5,14 +5,50 @@ import * as API from '../../servicios/servicios'
 
 export function ListAlumnos(){
     const [alumnos, setAlumnos] =useState([]);
-
+    const [color, setColor] =useState('');
+    const [mensajeSuccess, setmensajeSuccess] = useState('')
     useEffect(()=>{
         API.getAlumnos().then(setAlumnos)
     },[]);
 
+// esta es la funcion para cambiar de estado 
+const CambioEstadoAlumno  = async(id, estado)=>{
+    if(estado=='B'){
+        setColor('danger')
+    }else{
+        setColor('success')
+    }
+    
+    const datos_enviar={
+        estado: estado
+    };
+    const respuesta = await API.CambioEstadoAlumno(id, datos_enviar)
+    if(respuesta.status){
+        setmensajeSuccess(respuesta.mensaje)
+        
+        setTimeout(()=>{
+            setmensajeSuccess('')
+            window.location.reload(true)
+        }, 2000)
+    }else{
+        setmensajeSuccess(respuesta.mensaje)
+        
+        setTimeout(()=>{
+            setmensajeSuccess('')
+        }, 4000)
+    }
+    console.log(color)
+}
+
 
     return(
         <div className="card">
+            {
+                mensajeSuccess?
+                <div className={`alert alert-${color}`} role="alert">
+                    {mensajeSuccess}
+                </div>:''
+            }
             <div className="card-header">
                 Listado de alumnos 
             </div>
@@ -28,6 +64,7 @@ export function ListAlumnos(){
                             <th>Sexo</th>
                             <th>Domicilio</th>
                             <th>Estado Civil</th>
+                            <th>Estado</th>
                             <th>&nbsp;</th>
                         </tr>
                         </thead>
@@ -42,9 +79,25 @@ export function ListAlumnos(){
                                 <td>{alumno.domicilio}</td>
                                 <td>{alumno.estado_civil}</td>
                                 <td>
-                                    <div class="btn-group" role="group" aria-label="">
-                                        <button type="button" class="btn btn-warning">Editar</button>
-                                        <button type="button" class="btn btn-danger">Eliminar</button>
+                                    <span className="badge bg-info">
+                                        {
+                                        (alumno.estado=='A'?'Activo':'Baja')
+                                        }
+                                    </span>
+                                </td>
+                                
+                                <td>
+                                    <div className="btn-group" role="group" aria-label="">
+                                        { (alumno.estado=='A')? 
+                                        <>
+                                        <Link to={`/editar_alumno/${alumno.id_alumno}`}>
+                                         <button type="button" className="btn btn-warning">Editar</button>
+                                        </Link> 
+                                        <button onClick={() => CambioEstadoAlumno(alumno.id_alumno, 'B')} type="button" className="btn btn-danger">Dar de baja</button>
+                                        </>
+                                        :
+                                        <button onClick={() => CambioEstadoAlumno(alumno.id_alumno, 'A')} type="button" className="btn btn-success">Dar de alta</button>
+                                        }
                                     </div>
                                 </td>
                             </tr>

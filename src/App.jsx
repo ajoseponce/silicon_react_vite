@@ -10,6 +10,7 @@ import { Registro } from './componentes/login/Registro'
 import { useEffect, useState } from 'react'
 import { ListUsuarios } from './componentes/usuarios/ListUsuarios'
 import { EditarCurso } from './componentes/cursos/EditarCurso'
+import { EditarAlumno } from './componentes/alumnos/EditarAlumno'
 
 function App() {
   const [usuario, setUsuario] = useState('');
@@ -41,6 +42,7 @@ function App() {
              <Route path='/listar_alumnos' element={<ListAlumnos/>} ></Route>
              <Route path='/crear_alumnos' element={<CreaAlumno/>} ></Route>
              <Route path='/listar_usuarios' element={<ListUsuarios/>} ></Route>
+             <Route path='/editar_alumno/:id_alumno' element={<EditarAlumno/>} ></Route>
 
           </Routes>
         </div>

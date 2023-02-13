@@ -176,3 +176,43 @@ export async function AltaCurso(id_curso){
         alert('No se puede conectar con el servidor')
     }
 }
+
+export async function CambioEstadoAlumno(id_alumno, datos){
+    const requestOptions={
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datos)
+    };
+    try{
+        const response = await fetch(`${API_URL}/cambioestadoalumno/${id_alumno}`, requestOptions)
+        const data = await response.json();
+        return data;
+    } catch(e){
+
+        alert('No se puede conectar con el servidor')
+    }
+}
+
+export async function getAlumnoById(id_alumno){
+    try{
+        const response = await fetch(`${API_URL}/alumnos/${id_alumno}`);
+        const data = await response.json();
+        return data[0];
+    }catch(error){
+        console.log('Nuestro error', error);
+    }
+}
+
+export function UpdateAlumno(id_alumno, datos){
+    const requestOptions={
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    };
+    fetch(`${API_URL}/alumnos/${id_alumno}`, requestOptions)
+    
+}

@@ -21,13 +21,10 @@ const trae_datos  = async ()=>{
 }
 
 const editar_curso = ()=>{
-    // console.log('llama a la funcion correctamente')
-    //  const nombre = curso.current.value;
-    console.log('lo que esta en el input text para ediutar es :', curso,'y el id es', id_curso)
     const datos_enviar={
         nombre: curso
     };
-     API.UpdateCurso(id_curso,datos_enviar);
+    API.UpdateCurso(id_curso,datos_enviar);
     // nombre_curso.current.value=null;
     
     setmensajeSuccess('Se Edito el curso')
