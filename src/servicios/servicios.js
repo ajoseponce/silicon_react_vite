@@ -56,6 +56,19 @@ export async function getAlumnos(){
 }
 
     
+export async function BuscarAlumnos(filtros){
+    const requestOptions={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(filtros)
+    };
+    const response = await fetch(`${API_URL}/buscar_alumnos`, requestOptions)
+    const data = await response.json();
+        return data;
+}
+    
 export function SaveCurso(datos){
     const requestOptions={
         method: 'POST',
@@ -65,6 +78,19 @@ export function SaveCurso(datos){
         body: JSON.stringify(datos)
     };
     fetch(`${API_URL}/cursos`, requestOptions)
+    
+}
+
+    
+export function SaveAlumno(datos){
+    const requestOptions={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    };
+    fetch(`${API_URL}/alumnos`, requestOptions)
     
 }
 

@@ -7,9 +7,18 @@ export function ListAlumnos(){
     const [alumnos, setAlumnos] =useState([]);
     const [color, setColor] =useState('');
     const [mensajeSuccess, setmensajeSuccess] = useState('')
-    useEffect(()=>{
-        API.getAlumnos().then(setAlumnos)
-    },[]);
+
+    // los filtros de busqueda
+    const [apellido, setApellido] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [sexo, setSexo] = useState('');
+    const [dni, setDni] = useState('');
+
+
+    // aqui se carga por primera vez la variable
+useEffect(()=>{
+    API.getAlumnos().then(setAlumnos)
+},[]);
 
 // esta es la funcion para cambiar de estado 
 const CambioEstadoAlumno  = async(id, estado)=>{
@@ -37,10 +46,30 @@ const CambioEstadoAlumno  = async(id, estado)=>{
             setmensajeSuccess('')
         }, 4000)
     }
-    console.log(color)
+    
+}
+// funcion para buscar alumnos 
+const buscar_alumno = ()=>{
+    
+    const filtros={
+        apellido: apellido,
+        nombre: nombre,
+        dni: dni,
+        sexo: sexo,
+    };
+
+    API.BuscarAlumnos(filtros).then(setAlumnos);
+   
 }
 
-
+const limpiar_filtros = ()=>{
+    setApellido('')
+    setNombre('')
+    setDni('')
+    setSexo('')
+    API.getAlumnos().then(setAlumnos)
+   
+}
     return(
         <div className="card">
             {
@@ -49,9 +78,62 @@ const CambioEstadoAlumno  = async(id, estado)=>{
                     {mensajeSuccess}
                 </div>:''
             }
+             <div class="card">
+                <div class="card-header">
+                    Filtros de busqueda
+                </div>
+                <div class="card-body">
+                    <div className='row'>
+                        <div className='col-3'>
+                            <label>Apellido </label>
+                            <input 
+                            id='apellido'
+                            className='form-control'
+                            value={apellido} 
+                            onChange={(event)=>setApellido(event.target.value)}
+                            />
+                        </div>
+                        <div className='col-3'>
+                            <label>Nombre </label>
+                            <input 
+                            id='nombre'
+                            className='form-control'
+                            value={nombre} 
+                            onChange={(event)=>setNombre(event.target.value)}
+                            />
+                        </div>
+                        <div className='col-3'>
+                            <label>Dni </label>
+                            <input 
+                            value={dni} 
+                            onChange={(event)=>setDni(event.target.value)}
+                            className='form-control'/>
+                        </div>
+                        <div className='col-3'>
+                            <label>Sexo </label>
+                            <select onChange={(event)=>setSexo(event.target.value)} className='form-control'>
+                                <option>Seleccionar filtro</option>
+                                <option value='M'>Masculino</option>
+                                <option value='F'>Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className='row mt-3'>
+                        <div className='col-6' >
+                            <button onClick={buscar_alumno}  className='btn btn-primary'>Buscar</button>
+                            <button onClick={limpiar_filtros}  className='btn btn-dark'>Limpiar Filtros</button>
+                        </div>
+                        
+
+
+                    </div>
+                    
+                </div>
+            </div>
             <div className="card-header">
                 Listado de alumnos 
             </div>
+           
             <div className="card-body">
             <Link name="" id="" className="btn btn-primary" to={'/crear_alumnos'} role="button">Nuevo Alumno</Link>
                 <table className="table table-striped table-inverse table-responsive">

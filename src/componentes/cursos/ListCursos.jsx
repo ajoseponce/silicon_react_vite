@@ -96,11 +96,10 @@ export function ListCursos(){
                                     
                                     { (curso.estado=='A')? 
                                     <>
-                                                                        <Link to={`/editar_curso/${curso.id_curso}`}>
+                                    <Link to={`/editar_curso/${curso.id_curso}`}>
                                     <button type="button" className="btn btn-warning">Editar</button>
                                     </Link> 
                                     <button onClick={() => bajaCurso(curso.id_curso)} type="button" className="btn btn-danger">Dar de baja</button>
-                                    
                                     </>
                                     :
                                     <button onClick={() => altaCurso(curso.id_curso)} type="button" className="btn btn-success">Dar de alta</button>

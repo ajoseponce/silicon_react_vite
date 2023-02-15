@@ -39,10 +39,9 @@ export function EditarAlumno(){
             estado_civil: estado_civil
         };
         API.UpdateAlumno(id_alumno,datos_enviar);
-        setmensajeSuccess('Se Edito el curso')
+        setmensajeSuccess('Se Edito el alumno')
             setTimeout(()=>{
                 setmensajeSuccess('')
-                // window.location.reload(true)
             }, 2000)
     }
     return (
