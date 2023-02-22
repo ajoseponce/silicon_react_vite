@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import * as API from '../../servicios/servicios'
+import './cursos.css';
 export function CreaCurso(){
     const nombre_curso = useRef();
     const [mensajeSuccess, setmensajeSuccess] = useState('')

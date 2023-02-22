@@ -11,7 +11,9 @@ export function Login(){
         event.preventDefault();
         const user = await API.Login({username, password})
         if(user.status){
-            window.localStorage.setItem('usuario', JSON.stringify(user));
+            // console.log(user.token);
+             window.localStorage.setItem('usuario', JSON.stringify(user));
+             window.localStorage.setItem('token', JSON.stringify(user.token));
             setUsername('')
             setPassword('')
             window.location.reload(true)

@@ -12,6 +12,7 @@ import { ListUsuarios } from './componentes/usuarios/ListUsuarios'
 import { EditarCurso } from './componentes/cursos/EditarCurso'
 import { EditarAlumno } from './componentes/alumnos/EditarAlumno'
 
+
 function App() {
   const [usuario, setUsuario] = useState('');
 

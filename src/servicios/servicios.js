@@ -1,15 +1,21 @@
 const API_URL ='http://localhost:3300'
 
-//trae los cursos
-export async function getCursos(){
-    try{
-        const response = await fetch(`${API_URL}/cursos`);
-        const data = await response.json();
-        return data;
-    }catch(error){
-        console.log('Nuestro error', error);
+export async function getCursos() {
+    const token = JSON.parse(localStorage.getItem('token'));
+    const requestOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await fetch(`${API_URL}/cursos`, requestOptions);
+      const data = await response.json(); // Await la respuesta de la promesa
+      return data;
+    } catch(error) {
+      console.log('Nuestro error', error);
     }
-}
+  }
 
 
 export async function getCursoById(id_curso){
@@ -35,8 +41,17 @@ export function UpdateCurso(id_curso, nombre_curso){
 }
 
 export async function getUsuarios(){
+    const token = JSON.parse(localStorage.getItem('token'));
+    
+    const requestOptions = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      
     try{
-        const response = await fetch(`${API_URL}/usuarios`);
+        const response = await fetch(`${API_URL}/usuarios`, requestOptions);
         const data = await response.json();
         return data;
     }catch(error){
@@ -46,8 +61,16 @@ export async function getUsuarios(){
 
 // traer los alumnos
 export async function getAlumnos(){
+    const token = JSON.parse(localStorage.getItem('token'));
+    
+    const requestOptions = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
     try{
-        const response = await fetch(`${API_URL}/alumnos`);
+        const response = await fetch(`${API_URL}/alumnos`, requestOptions);
         const data = await response.json();
         return data;
     }catch(error){
