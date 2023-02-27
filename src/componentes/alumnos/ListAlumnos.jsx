@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import * as API from '../../servicios/servicios'
-
+import { } from 'bootstrap';
 export function ListAlumnos(){
     const [alumnos, setAlumnos] =useState([]);
     const [color, setColor] =useState('');
@@ -14,6 +14,10 @@ export function ListAlumnos(){
     const [sexo, setSexo] = useState('');
     const [dni, setDni] = useState('');
 
+    const [inscripciones, setInscripcion] = useState([]);
+    const [cursos, setCursos] = useState([]);
+    const [id_alumno, setIdAlumno] = useState();
+    const [id_curso, setIdCurso] = useState();
 
     // aqui se carga por primera vez la variable
 useEffect(()=>{
@@ -70,7 +74,40 @@ const limpiar_filtros = ()=>{
     API.getAlumnos().then(setAlumnos)
    
 }
+
+const trae_inscripciones_alumno  = async(id)=>{
+    
+    setIdAlumno(id)
+    setInscripcion([])
+    setCursos([])
+
+    const datos = await API.getInscripcionesByIdAlumno(id)
+    const arrayCursos = await API.getCursosSinAsignar(id)
+
+     setCursos(arrayCursos)
+
+     if(datos.status){
+        setInscripcion(datos.registros)
+     }else{
+        console.log('no tiene datos')
+     }
+    
+}
+
+const incribir  = async(id)=>{
+    
+    const datos_enviar={
+        id_alumno: id_alumno,
+        id_curso: id_curso
+    };
+
+    console.log(datos_enviar)
+    
+}
+
+
     return(
+        <>
         <div className="card">
             {
                 mensajeSuccess?
@@ -175,6 +212,9 @@ const limpiar_filtros = ()=>{
                                         <Link to={`/editar_alumno/${alumno.id_alumno}`}>
                                          <button type="button" className="btn btn-warning">Editar</button>
                                         </Link> 
+                                       
+                                        <button type="button"  onClick={() => trae_inscripciones_alumno(alumno.id_alumno)}  data-bs-toggle="modal" data-bs-target="#exampleModal" className="btn btn-secondary">Inscripciones</button>
+                                       
                                         <button onClick={() => CambioEstadoAlumno(alumno.id_alumno, 'B')} type="button" className="btn btn-danger">Dar de baja</button>
                                         </>
                                         :
@@ -191,5 +231,68 @@ const limpiar_filtros = ()=>{
                 Silicon Misiones
             </div>
         </div>
+        
+        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">Inscripciones</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                <div className="form-group">
+                <label for="">el id del alumno es: {id_alumno} y id del curso seleccionado es: {id_curso}</label>
+                  <label for="">Nombre del curso</label>
+                  {/* lo ponga aca el nombre que es:  {curso} */}
+                  <select onChange={(event)=>setIdCurso(event.target.value)} className='form-control'>
+                        <option>Seleccionar un curso</option>
+                            {
+                        cursos?
+                        cursos.map((c)=>(
+                            <option value={c.id_curso}>{c.nombre}</option>
+                        )):
+                            <option value='F'>No Contiene mas cursos</option>
+                        }
+                    </select>
+                    <button type="button" onClick={() => incribir()}  className="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
+                   
+                 
+                </div>
+                <table className="table table-striped table-inverse table-responsive">
+                    <thead className="thead-inverse">
+                        <tr>
+                            
+                            <th>Curso</th>
+                            <th>Nota</th>
+                            <th>Fecha inscripcion</th>
+                            <th>Comentario</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {
+                    inscripciones?
+                    inscripciones.map((inscrip)=>(
+                            <tr>
+                                <td scope="row">{inscrip.curso}</td>
+                                <td scope="row">{inscrip.nota}</td>
+                                <td scope="row">{inscrip.fecha_formateada}</td>
+                                <td scope="row">{inscrip.descripcion}</td>
+                                </tr>
+                    ))
+                    :
+                    <tr>
+                        <td colSpan={4} scope="row">No tiene inscripciones</td>
+                    </tr>
+                    }
+                    </tbody>
+                </table>
+                </div>
+                
+                </div>
+            </div>
+        </div>
+        </>
+        
     )
 }

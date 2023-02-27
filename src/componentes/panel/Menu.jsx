@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
+import { Principal } from './Principal'
 export function Menu(){
     const [usuario, setUsuario] =useState('')
     const [nombre_usuario, setNombreUsuario] =useState('')
@@ -15,7 +16,8 @@ export function Menu(){
       }
     },[])
     return(
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <a className="navbar-brand" href="#">Sistema</a>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
@@ -62,7 +64,10 @@ export function Menu(){
             </div>
             
           </nav>
-
+          <Principal/>
+      </>
+        
+          
         //         
     )
 }

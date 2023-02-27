@@ -265,3 +265,24 @@ export function UpdateAlumno(id_alumno, datos){
     fetch(`${API_URL}/alumnos/${id_alumno}`, requestOptions)
     
 }
+
+
+export async function getInscripcionesByIdAlumno(id_alumno){
+    try{
+        const response = await fetch(`${API_URL}/inscripciones/${id_alumno}`);
+        const data = await response.json();
+        return data;
+    }catch(error){
+        console.log('Nuestro error', error);
+    }
+}
+
+export async function getCursosSinAsignar(id_alumno){
+    try{
+        const response = await fetch(`${API_URL}/cursosSinAsignar/${id_alumno}`);
+        const data = await response.json();
+        return data;
+    }catch(error){
+        console.log('Nuestro error', error);
+    }
+}
