@@ -8,6 +8,7 @@ export function Registro(){
     const [email, setEmail] = useState('');
     const [apellido_nombre, setApellidonombre] = useState('');
     const [mensajeSuccess, setmensajeSuccess] = useState('');
+    const [mensajeError, setmensajeError] = useState('');
 
 
     const registroForm  = async (event)=>{
@@ -19,6 +20,11 @@ export function Registro(){
                 setmensajeSuccess('');
             }, 4000)
             // window.location.reload(true)
+        }else{
+            setmensajeError(user.mensaje)
+            setTimeout(()=>{
+                setmensajeError('');
+            }, 4000)
         }
     }
     return(
@@ -28,6 +34,12 @@ export function Registro(){
             mensajeSuccess?
             <div className="alert alert-success" role="alert">
                 {mensajeSuccess}
+            </div>:''
+        }
+        {
+            mensajeError?
+            <div className="alert alert-danger" role="alert">
+                {mensajeError}
             </div>:''
         }
         <div className="card">

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom"
 import * as API from '../../servicios/servicios'
 
 export function Login(){
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-     const [mensajeError, setmensajeError] = useState('')
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+     const [mensajeError, setmensajeError] = useState('');
 
     const enviarForm  = async (event)=>{
         event.preventDefault();
@@ -60,8 +60,6 @@ export function Login(){
                 onChange={(event)=>setPassword(event.target.value)} />
                 <label for="floatingPassword">Password</label>
                 </div>
-
-                
                 <button class="w-100 btn btn-lg btn-primary" type="submit">Ingresar</button>
                 <Link to={'/registro'}>
                     Registro

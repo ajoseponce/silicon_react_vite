@@ -3,10 +3,12 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import * as API from '../../servicios/servicios'
 import { } from 'bootstrap';
+import DataTable from 'react-data-table-component';
 export function ListAlumnos(){
     const [alumnos, setAlumnos] =useState([]);
     const [color, setColor] =useState('');
     const [mensajeSuccess, setmensajeSuccess] = useState('')
+    const [mensajeSuccessInscripcion, setmensajeSuccessInscripcion] = useState('')
 
     // los filtros de busqueda
     const [apellido, setApellido] = useState('');
@@ -18,6 +20,7 @@ export function ListAlumnos(){
     const [cursos, setCursos] = useState([]);
     const [id_alumno, setIdAlumno] = useState();
     const [id_curso, setIdCurso] = useState();
+    const [descripcion, setDescripcion] = useState();
 
     // aqui se carga por primera vez la variable
 useEffect(()=>{
@@ -74,38 +77,86 @@ const limpiar_filtros = ()=>{
     API.getAlumnos().then(setAlumnos)
    
 }
-
+// funcion que carga el modal 
 const trae_inscripciones_alumno  = async(id)=>{
-    
     setIdAlumno(id)
     setInscripcion([])
     setCursos([])
-
     const datos = await API.getInscripcionesByIdAlumno(id)
     const arrayCursos = await API.getCursosSinAsignar(id)
-
      setCursos(arrayCursos)
-
      if(datos.status){
         setInscripcion(datos.registros)
-     }else{
-        console.log('no tiene datos')
      }
-    
 }
 
-const incribir  = async(id)=>{
-    
+
+
+const grabar_inscripciones_alumno  = async()=>{
+
     const datos_enviar={
         id_alumno: id_alumno,
-        id_curso: id_curso
+        id_curso: id_curso,
+        descripcion: 'http://url/ruta/'+id_alumno
     };
-
-    console.log(datos_enviar)
-    
+    // console.log(datos_enviar)
+    API.SaveInscripcionAlumno(datos_enviar);
+    setmensajeSuccessInscripcion('Se inscribio')
+    setTimeout(()=>{
+        setmensajeSuccessInscripcion('')
+        trae_inscripciones_alumno(id_alumno)
+    }, 4000)
 }
 
+const columns = [
+    {
+      name: 'ID',
+      selector: row => row.id_alumno
+    },
+    {
+      name: 'Alumno',
+      selector: row => row.apellido+' '+row.nombre,
+    },
+    {
+      name: 'DNI',
+      selector: row => row.dni
+    },
+    {
+        name: 'SEXO',
+        selector: row => row.sexo
+      },
+      {
+        name: 'DOMICILIO',
+        selector: row => row.domicilio
+      },
+    {
+        cell: (row) => (
+            (row.estado=='A')? 
+            <button
+                className="btn btn-outline btn-xs"
+                onClick={(e) => handleButtonClick(e, row.id_alumno)}
+            >
+                Baja
+            </button>
+            :
+            <button
+                className="btn btn-outline btn-xs"
+                onClick={(e) => handleButtonClick(e, row.id_alumno)}
+            >
+                Alta
+            </button>
+            
 
+        ),
+    //  cell:() => <button onClick={Click(row.id_curso)} id={row.id_curso} type="button" className="btn btn-warning">Editar</button>
+    }
+
+  ]
+
+  const handleButtonClick = (e, id) => {
+    e.preventDefault();
+    console.log("el Id es", id);
+};
     return(
         <>
         <div className="card">
@@ -115,11 +166,11 @@ const incribir  = async(id)=>{
                     {mensajeSuccess}
                 </div>:''
             }
-             <div class="card">
-                <div class="card-header">
+             <div className="card">
+                <div className="card-header">
                     Filtros de busqueda
                 </div>
-                <div class="card-body">
+                <div className="card-body">
                     <div className='row'>
                         <div className='col-3'>
                             <label>Apellido </label>
@@ -167,13 +218,15 @@ const incribir  = async(id)=>{
                     
                 </div>
             </div>
+            
             <div className="card-header">
                 Listado de alumnos 
             </div>
            
             <div className="card-body">
             <Link name="" id="" className="btn btn-primary" to={'/crear_alumnos'} role="button">Nuevo Alumno</Link>
-                <table className="table table-striped table-inverse table-responsive">
+            <DataTable columns={columns} data={alumnos} />
+                {/* <table className="table table-striped table-inverse table-responsive">
                     <thead className="thead-inverse">
                         <tr>
                             <th>ID</th>
@@ -225,7 +278,7 @@ const incribir  = async(id)=>{
                             </tr>
                         ))}
                         </tbody>
-                </table>
+                </table> */}
             </div>
             <div className="card-footer text-muted">
                 Silicon Misiones
@@ -240,21 +293,40 @@ const incribir  = async(id)=>{
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
+                {
+                mensajeSuccessInscripcion?
+                    <div className="alert alert-success" role="alert">
+                        {mensajeSuccessInscripcion}
+                    </div>:''
+                }
                 <div className="form-group">
-                <label for="">el id del alumno es: {id_alumno} y id del curso seleccionado es: {id_curso}</label>
-                  <label for="">Nombre del curso</label>
-                  {/* lo ponga aca el nombre que es:  {curso} */}
-                  <select onChange={(event)=>setIdCurso(event.target.value)} className='form-control'>
-                        <option>Seleccionar un curso</option>
-                            {
-                        cursos?
-                        cursos.map((c)=>(
-                            <option value={c.id_curso}>{c.nombre}</option>
-                        )):
-                            <option value='F'>No Contiene mas cursos</option>
-                        }
-                    </select>
-                    <button type="button" onClick={() => incribir()}  className="btn btn-primary" data-bs-dismiss="modal">Guardar</button>
+                <div className='row'>
+                        <div className='col-4'>
+                            <label for="">Nombre del curso</label>
+                            {/* lo ponga aca el nombre que es:  {curso} */}
+                            <select onChange={(event)=>setIdCurso(event.target.value)} className='form-control'>
+                                    <option>Seleccionar un curso</option>
+                                        {
+                                    cursos?
+                                    cursos.map((c)=>(
+                                        <option value={c.id_curso}>{c.nombre}</option>
+                                    )):
+                                        <option value='F'>No Contiene mas cursos</option>
+                                    }
+                                </select>
+                        </div>
+                        <div className='col-4'>
+                        <label>Observacion </label>
+                            <input 
+                            id='descripcion'
+                            disabled
+                            className='form-control'
+                            value={'url/ruta/'+id_alumno} 
+                            
+                            />
+                        </div>
+                 </div>    
+                <button type="button" onClick={() => grabar_inscripciones_alumno()}  className="btn btn-primary" >Guardar</button>
                    
                  
                 </div>

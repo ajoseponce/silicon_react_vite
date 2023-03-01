@@ -118,6 +118,19 @@ export function SaveAlumno(datos){
 }
 
 
+export function SaveInscripcionAlumno(datos){
+    const requestOptions={
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    };
+    fetch(`${API_URL}/inscripcion_alumnos`, requestOptions)
+    
+}
+
+
 export async function Login(datos){
     const requestOptions={
         method: 'POST',

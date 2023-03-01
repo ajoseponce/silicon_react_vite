@@ -6,6 +6,8 @@ import { Menu } from '../panel/Menu';
 import './cursos.css';
 import { } from 'bootstrap';
 import { EditarCurso } from './EditarCurso';
+import DataTable from 'react-data-table-component';
+
 export function ListCursos(){
 
     const [cursos, setCursos] = useState([]);
@@ -16,6 +18,7 @@ export function ListCursos(){
     const [mensajeSuccess, setmensajeSuccess] = useState('')
     useEffect(()=>{
         API.getCursos().then(setCursos)
+        // console.log(cursos)
     },[])
 
     const bajaCurso  = async(id)=>{
@@ -43,7 +46,43 @@ export function ListCursos(){
         setCurso(datos_curso.nombre)
         
     }
+    const columns = [
+        {
+          name: 'ID',
+          selector: row => row.id_curso
+        },
+        {
+          name: 'NOMBRE',
+          selector: row => row.nombre,
+        },
+        {
+          name: 'ESTADO',
+          selector: row => row.estado
+        },
+        {
+            cell: (row) => (
+                (row.estado=='A')? 
+                <button
+                    className="btn btn-outline btn-xs"
+                    onClick={(e) => handleButtonClick(e, row.id_curso)}
+                >
+                    Baja
+                </button>
+                :
+                <button
+                    className="btn btn-outline btn-xs"
+                    onClick={(e) => handleButtonClick(e, row.id_curso)}
+                >
+                    Alta
+                </button>
+                
 
+            ),
+        //  cell:() => <button onClick={Click(row.id_curso)} id={row.id_curso} type="button" className="btn btn-warning">Editar</button>
+        }
+    
+      ]
+      
     const editar_curso = ()=>{
         
         const datos_enviar={
@@ -73,6 +112,10 @@ export function ListCursos(){
             }, 4000)
         }
     }
+    const handleButtonClick = (e, id) => {
+        e.preventDefault();
+        console.log("Row Id", id);
+    };
     return(
         <>
         <div className="card">
@@ -94,7 +137,9 @@ export function ListCursos(){
                 }
             <div className="card-body">
                 <Link name="" id="" className="btn btn-primary" to={'/crear_cursos'} role="button">Nuevo Curso</Link>
-                <table className="table">
+                
+                <DataTable columns={columns} data={cursos}/>
+                {/* <table className="table">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -135,7 +180,7 @@ export function ListCursos(){
                         </tr>
                        ))}
                     </tbody>
-                </table>
+                </table> */}
             </div>
             <div className="card-footer text-muted">
                 Silicom Misiones 
